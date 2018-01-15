@@ -1,0 +1,52 @@
+6
+SELECT COUNT(profielnaam) 
+FROM Bekeken
+WHERE percentage = 100 AND Gezien =(
+	SELECT Id
+	FROM Film
+	WHERE Titel = 'The Life of Brian');
+
+	
+5
+SELECT *
+FROM Account
+WHERE Abonneenummer = (
+	SELECT Abonneenummer
+	FROM Profiel
+	GROUP BY Abonneenummer
+	HAVING COUNT(Profielnaam) = 1);
+	
+4 (werkt niet door having) 
+SELECT Titel
+FROM Film
+WHERE Leeftijdsindicatie < 16
+GROUP BY Titel
+HAVING MAX(Tijdsduur);
+
+3
+SELECT Titel
+FROM Film
+WHERE FilmId =(
+	SELECT BekekenId
+	FROM Bekeken
+	WHERE Abonneenummer = (
+		SELECT Abonneenummer
+		FROM Account
+		WHERE......));
+
+2
+SELECT b.Abonneenummer, BekekenId, AVG(b.Percentage)
+FROM Bekeken AS b
+JOIN Aflevering AS a ON a.AfleveringId = b.BekekenId
+JOIN Profiel AS p ON b.Abonneenummer = p.Abonneenummer
+WHERE (b.Abonneenummer= 5602533) AND (a.Serienaam = 'Breaking Bad')
+GROUP BY BekekenId;
+
+1
+SELECT AfleveringId, Titel, AVG(b.percentage)
+FROM Aflevering AS a
+FULL JOIN Bekeken AS b ON a.AfleveringId=b.BekekenId
+WHERE (Serienaam = 'Breaking Bad')
+GROUP BY AfleveringId, Titel;
+
+
