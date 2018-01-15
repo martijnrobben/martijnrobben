@@ -1,0 +1,248 @@
+USE MASTER;
+DROP DATABASE IF EXISTS NetFlix;
+CREATE DATABASE NetFlix
+GO
+USE NetFlix;
+
+
+
+CREATE TABLE Account(
+    Abonneenummer INT NOT NULL,
+    Naam NVARCHAR(100) NOT NULL,
+    Straat NVARCHAR(200) NOT NULL,
+    Postcode CHAR(6) NOT NULL,
+    Huisnummer VARCHAR(5) NOT NULL,
+    Plaats NVARCHAR(100) NOT NULL,
+    CONSTRAINT PK_Abonneenummer PRIMARY KEY (Abonneenummer)
+);
+
+CREATE TABLE Profiel(
+    
+    Profielnaam NVARCHAR(100) NOT NULL,
+    Abonneenummer INT NOT NULL,
+    Geboortedatum DATE NOT NULL,
+    CONSTRAINT PK_Profiel PRIMARY KEY (Profielnaam, Abonneenummer),
+    CONSTRAINT FK_Profiel FOREIGN KEY (Abonneenummer) REFERENCES Account(Abonneenummer) ON DELETE CASCADE
+);
+
+
+CREATE TABLE Programma(
+    ProgrammaId INT NOT NULL,
+    CONSTRAINT PK_Id PRIMARY KEY (ProgrammaId)
+);
+
+CREATE TABLE Film(
+    FilmId INT NOT NULL,
+    Titel NVARCHAR(300) NOT NULL,
+    Leeftijdsindicatie TINYINT,
+    Taal NVARCHAR(30) NOT NULL,
+    Tijdsduur INT NOT NULL,
+    Genre NVARCHAR(20) NOT NULL,
+    CONSTRAINT PK_Film PRIMARY KEY (FilmId),
+    CONSTRAINT FK_FilmId FOREIGN KEY (FilmId) REFERENCES Programma(ProgrammaId)
+);
+
+CREATE TABLE Serie(
+    Serienaam NVARCHAR(300) NOT NULL,
+    Seizoen TINYINT NOT NULL,
+    Leeftijdsindicatie TINYINT,
+    Taal NVARCHAR(30) NOT NULL,
+    Genre NVARCHAR(20) NOT NULL,
+    LijktOp NVARCHAR(300),
+    CONSTRAINT PK_Serie PRIMARY KEY (Serienaam)
+);
+
+CREATE TABLE Aflevering(
+    AfleveringId INT NOT NULL,
+    Serienaam NVARCHAR(300) NOT NULL FOREIGN KEY REFERENCES Serie(Serienaam),
+    Seizoen VARCHAR(6) NOT NULL,
+    Titel NVARCHAR(50) NOT NULL,
+    Tijdsduur INT NOT NULL,
+    CONSTRAINT PK_Aflevering PRIMARY KEY (AfleveringId),
+    CONSTRAINT FK_Aflevering FOREIGN KEY (Serienaam) REFERENCES Serie(Serienaam),
+    CONSTRAINT FK_Aflevering2 FOREIGN KEY (AfleveringId) REFERENCES Programma(ProgrammaId)
+);
+
+CREATE TABLE Bekeken(
+    Abonneenummer INT NOT NULL,
+    Profielnaam NVARCHAR(100) NOT NULL,
+    BekekenId INT NOT NULL,
+    [Percentage] TINYINT NOT NULL,
+    CONSTRAINT PK_Bekeken PRIMARY KEY (Profielnaam, BekekenId),
+    CONSTRAINT FK_Bekeken FOREIGN KEY (Profielnaam, Abonneenummer) REFERENCES Profiel(Profielnaam, Abonneenummer) ON DELETE CASCADE,
+	CONSTRAINT FK_Gezien FOREIGN KEY(BekekenId) REFERENCES Programma(ProgrammaId)   
+);
+
+INSERT INTO Programma(ProgrammaId) VALUES
+(1010),
+(8001),
+(8002),
+(8004),
+(8005),
+(8008),
+(8010),
+(8011),
+(8012),
+(8013),
+(8016),
+(8017),
+(1001),
+(1002),
+(1003),
+(1004),
+(1005),
+(1006),
+(1007),
+(1008),
+(1009),
+(2000),
+(2001),
+(2002),
+(2003),
+(2004),
+(2005),
+(2006),
+(2007),
+(2008),
+(2009),
+(2010),
+(2011),
+(2012),
+(2013),
+(2014),
+(2015),
+(2016),
+(2017),
+(2018),
+(2019),
+(3001),
+(3002),
+(3003),
+(3004),
+(3005),
+(3006),
+(3007),
+(3008),
+(3009),
+(3010),
+(3101),
+(3102),
+(3103),
+(3104),
+(3105),
+(3106),
+(3107),
+(3108),
+(3109),
+(3110);
+
+INSERT INTO Film (FilmId, Titel, Leeftijdsindicatie, Taal, Tijdsduur, Genre) VALUES
+(1010, 'The Abominable Bride', 12, 'Engels', 89, 'Detective'),
+(8001, 'The Life of Brian', 12, 'Engels', 94, 'Humor'),
+(8002, 'Pulp Fiction', 16, 'Engels-Amerikaans', 154, 'Misdaad'),
+(8004, 'Pruimebloesem', 18, 'Nederlands', 80, 'Erotiek'),
+(8008, 'Reservoir Dogs', 16, 'Engels-Amerikaans', 99, 'Misdaad'),
+(8010, 'The Good, the Bad, and the Ugly', 12, 'Engels-Amerikaans', 161, 'Western'),
+(8011, 'Andy Warhol''s Dracula', 16, 'Engels-Amerikaans', 103, 'Humor'),
+(8012, 'Ober', 6, 'Nederlands', 97, 'Humor'),
+(8013, 'Der Untergang', 6, 'Duits', 178, 'Oorlog'),
+(8016, 'De helaasheid er dingen', 12, 'Vlaams', 108, 'Humor'),
+(8017, 'A Clockwork Orange', 16, 'Engels', 136, 'SF');
+
+INSERT INTO Serie(Serienaam, Seizoen, Leeftijdsindicatie, Taal, Genre, LijktOp) VALUES
+('Sherlock', 3, 12, 'Engels', 'Detective', 'Fargo'),
+('Breaking Bad', 2, 16, 'Engels-Amerikaans', 'Spanning', 'Fargo'),
+('Fargo', 2, 16, 'Engels-Amerikaans', 'Spanning', 'Breaking Bad');
+
+INSERT INTO Aflevering(AfleveringId, Serienaam, Seizoen, Titel, Tijdsduur) VALUES
+(1001, 'Sherlock', 'S01E01', 'A study in Pink', 88),
+(1002, 'Sherlock', 'S01E02', 'The Blind Banker',88),
+(1003, 'Sherlock', 'S01E03', 'The Great Game', 88),
+(1004, 'Sherlock', 'S02E04', 'AScandal in Belgravia', 88),
+(1005, 'Sherlock', 'S02E05', 'The Hounds of Baskerville', 88),
+(1006, 'Sherlock', 'S02E06', 'The Reichenbach Fall', 88),
+(1007, 'Sherlock', 'S03E07', 'The Empty Hearse', 88),
+(1008, 'Sherlock', 'S03E08', 'The Sign of Three', 88),
+(1009, 'Sherlock', 'S03E09', 'His Last Vow', 88),
+
+(2000, 'Breaking Bad', 'S01E01', 'Pilot', 48),
+(2001, 'Breaking Bad', 'S01E01', 'Cat''s in the Bag...', 48),
+(2002, 'Breaking Bad', 'S01E01', '...And the Bag''s in the River', 48),
+(2003, 'Breaking Bad', 'S01E01', 'Cancer Man', 48),
+(2004, 'Breaking Bad', 'S01E01', 'Gray Matter', 48),
+(2005, 'Breaking Bad', 'S01E01', 'Crazy Handul of Nothin''', 48),
+(2006, 'Breaking Bad', 'S01E01', 'A No-Rough-Stuff-Type Deal', 48),
+(2007, 'Breaking Bad', 'S01E01', 'Seven Thirty-Seven', 48),
+(2008, 'Breaking Bad', 'S01E01', 'Grilled', 48),
+(2009, 'Breaking Bad', 'S01E01', 'Bit by a Dead Bee', 48),
+(2010, 'Breaking Bad', 'S01E01', 'Down', 48),
+(2011, 'Breaking Bad', 'S01E01', 'Breakage', 48),
+(2012, 'Breaking Bad', 'S01E01', 'Peekaboo', 48),
+(2013, 'Breaking Bad', 'S01E01', 'Negro Y Azul', 48),
+(2014, 'Breaking Bad', 'S01E01', 'Better Call Saul', 48),
+(2015, 'Breaking Bad', 'S01E01', '4 Days Out', 48),
+(2016, 'Breaking Bad', 'S01E01', 'Over', 48),
+(2017, 'Breaking Bad', 'S01E01', 'Mandala', 48),
+(2018, 'Breaking Bad', 'S01E01', 'Phoenix', 48),
+(2019, 'Breaking Bad', 'S01E01', 'ABQ', 48),
+
+(3001, 'Fargo', 'S01E01', 'The Crocodile''s Dilemma', 68),
+(3002, 'Fargo', 'S01E02', 'The Rooster Prince', 68),
+(3003, 'Fargo', 'S01E03', 'A Muddy Road', 68),
+(3004, 'Fargo', 'S01E04', 'Eating the Blame', 68),
+(3005, 'Fargo', 'S01E05', 'The Six Ungraspables', 68),
+(3006, 'Fargo', 'S01E06', 'Buridan''s Ass', 68),
+(3007, 'Fargo', 'S01E07', 'Who Shaves the Barber?', 68),
+(3008, 'Fargo', 'S01E08', 'The Heap', 68),
+(3009, 'Fargo', 'S01E09', 'A Fox, A Rabbit, And a Cabbage', 68),
+(3010, 'Fargo', 'S01E10', 'Morton''s Fork', 68),
+(3101, 'Fargo', 'S02E01', 'Waiting for Dutch', 68),
+(3102, 'Fargo', 'S02E02', 'Before the Law', 68),
+(3103, 'Fargo', 'S02E03', 'The Myth of Sisyphus', 68),
+(3104, 'Fargo', 'S02E04', 'The Gift of the Magi', 68),
+(3105, 'Fargo', 'S02E05', 'Fear and Trembling', 68),
+(3106, 'Fargo', 'S02E06', 'Rhinoceros', 68),
+(3107, 'Fargo', 'S02E07', 'Did you do this? No you did it!', 68),
+(3108, 'Fargo', 'S02E08', 'Loplop', 68),
+(3109, 'Fargo', 'S02E09', 'The Castle', 68),
+(3110, 'Fargo', 'S02E10', 'Palindrome', 68);
+
+INSERT INTO Account(Abonneenummer, Naam, Straat, Postcode, Huisnummer, Plaats) VALUES
+(1215426, 'Fam. van Raalte', 'Schopenhauerdijkje', '3991ML', '5', 'Houten'),
+(5602533, 'J. van Betlehem', 'Nietzschestraat', '8542BE', '99', 'Breda'),
+(5285824, 'F. de Kat', 'Kantlaan', '8542CD', '11', 'Breda');
+
+INSERT INTO Profiel(Abonneenummer, Profielnaam, Geboortedatum) VALUES
+(1215426, 'Frank', '19680125'),
+(1215426, 'Madelief', '20010819'),
+(5602533, 'Petrus', '19990626'),
+(5602533, 'Paulus', '19990626'),
+(5285824, 'Fritz', '19680819'),
+(5285824, 'Diana', '19881225');
+
+INSERT INTO Bekeken(Abonneenummer, Profielnaam, BekekenId, [Percentage]) VALUES
+(1215426, 'Frank', 1001, 100),
+(1215426, 'Frank', 1002, 100),
+(1215426, 'Frank', 1003, 78),
+(1215426, 'Madelief', 1001, 100),
+(1215426, 'Madelief', 1003, 60),
+(1215426, 'Madelief', 3001, 91),
+(1215426, 'Madelief', 2001, 100),
+(1215426, 'Madelief', 2002, 100),
+(1215426, 'Madelief', 2003, 100),
+(1215426, 'Madelief', 2004, 22),
+(5602533, 'Petrus', 3001, 100),
+(5602533, 'Petrus', 3002, 100),
+(5602533, 'Petrus', 3010, 60),
+(5602533, 'Petrus', 8001, 100),
+(5602533, 'Petrus', 8002, 99),
+(5602533, 'Paulus', 3001, 100),
+(5602533, 'Paulus', 3002, 74),
+(5602533, 'Paulus', 3010, 60),
+(5602533, 'Paulus', 8001, 100),
+(5602533, 'Paulus', 2019, 10),
+(5285824, 'Fritz', 1001, 100),
+(5285824, 'Fritz', 1002, 100),
+(5285824, 'Fritz', 1010, 5),
+(5285824, 'Diana', 8002, 100),
+(5285824, 'Diana', 1001, 45);

@@ -1,0 +1,51 @@
+De volgende 4 queries zorgen ervoor dat een gedeelte van de databas read-only wordt.
+Helaas vind SQL het niet leuk om ze tegelijk uit te voeren, dus ze moeten apart 
+worden ingevuld. De queries zijn gescheiden met de streepjes.
+
+-----------------
+
+CREATE TRIGGER [programmaRO] ON Programma
+    INSTEAD OF INSERT,
+               UPDATE,
+               DELETE
+AS
+BEGIN
+    RAISERROR( 'Deze tabel is read-only.', 1, 1 )
+    ROLLBACK TRANSACTION
+END
+
+-----------------
+
+CREATE TRIGGER SerieRO ON Serie
+    INSTEAD OF INSERT,
+               UPDATE,
+               DELETE
+AS
+BEGIN
+    RAISERROR( 'Deze tabel is read-only.', 1, 1 )
+    ROLLBACK TRANSACTION
+END
+
+-----------------
+
+CREATE TRIGGER FilmRO ON Film
+    INSTEAD OF INSERT,
+               UPDATE,
+               DELETE
+AS
+BEGIN
+    RAISERROR( 'Deze tabel is read-only.', 1, 1 )
+    ROLLBACK TRANSACTION
+END
+
+-----------------
+
+CREATE TRIGGER AfleveringRO ON Aflevering
+    INSTEAD OF INSERT,
+               UPDATE,
+               DELETE
+AS
+BEGIN
+    RAISERROR( 'Deze tabel is read-only.', 1, 1 )
+    ROLLBACK TRANSACTION
+END
